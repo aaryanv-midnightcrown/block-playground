@@ -1,4 +1,4 @@
-// State
+// App State
 let programStack = [];
 let isRunning = false;
 let currentServoAngle = 0;
@@ -21,25 +21,49 @@ const BLOCK_TYPES = {
   REPEAT_2X: { label: 'Repeat Sequence 2x', type: 'repeat', times: 2, code: '// Repeat sequence loop\nfor (int r = 0; r < 2; r++) {' }
 };
 
-// Initialize UI
+// Initialize Application UI & Listeners
 document.addEventListener('DOMContentLoaded', () => {
+  setupNavigation();
   setupLibraryEvents();
   setupWorkspaceEvents();
   setupControlEvents();
   renderWorkspace();
 });
 
-// Setup Library Click & Drag Events
+// Front Page Router / Navigation Logic
+function setupNavigation() {
+  const landingPage = document.getElementById('landing-page');
+  const appPage = document.getElementById('app-page');
+  const launchBtn = document.getElementById('launch-btn');
+  const demoBtn = document.getElementById('quick-demo-btn');
+  const backHomeBtn = document.getElementById('back-home-btn');
+
+  launchBtn.addEventListener('click', () => {
+    landingPage.classList.add('hidden');
+    appPage.classList.remove('hidden');
+  });
+
+  demoBtn.addEventListener('click', () => {
+    landingPage.classList.add('hidden');
+    appPage.classList.remove('hidden');
+    switchTab('code');
+  });
+
+  backHomeBtn.addEventListener('click', () => {
+    appPage.classList.add('hidden');
+    landingPage.classList.remove('hidden');
+  });
+}
+
+// Setup Library Drag & Click Listeners
 function setupLibraryEvents() {
   const libButtons = document.querySelectorAll('.library-panel .block-btn');
   libButtons.forEach(btn => {
-    // Click to add
     btn.addEventListener('click', () => {
       const key = btn.getAttribute('data-key');
       addBlock(key);
     });
 
-    // Drag start
     btn.addEventListener('dragstart', (e) => {
       draggedSource = 'library';
       libraryKey = btn.getAttribute('data-key');
@@ -48,7 +72,7 @@ function setupLibraryEvents() {
   });
 }
 
-// Setup Workspace Drag & Drop Dropzone
+// Workspace Drag Dropzone Handler
 function setupWorkspaceEvents() {
   const workspace = document.getElementById('program-list');
 
@@ -81,14 +105,13 @@ function setupWorkspaceEvents() {
       }
     }
 
-    // Reset Drag state
     draggedSource = null;
     draggedItemIndex = null;
     libraryKey = null;
   });
 }
 
-// Setup Control Buttons and Tabs
+// Interactive Controls and Tabs
 function setupControlEvents() {
   document.getElementById('clear-btn').addEventListener('click', clearProgram);
   document.getElementById('run-btn').addEventListener('click', runProgram);
@@ -98,7 +121,6 @@ function setupControlEvents() {
   document.getElementById('tab-btn-code').addEventListener('click', () => switchTab('code'));
 }
 
-// Workspace Management
 function addBlock(key) {
   if (isRunning || !BLOCK_TYPES[key]) return;
   programStack.push({ ...BLOCK_TYPES[key] });
@@ -139,7 +161,6 @@ function renderWorkspace() {
       <button class="remove-btn" data-index="${idx}">✕</button>
     `;
 
-    // Reorder Drag Events
     item.addEventListener('dragstart', (e) => {
       draggedSource = 'workspace';
       draggedItemIndex = idx;
@@ -151,7 +172,6 @@ function renderWorkspace() {
       item.classList.remove('dragging');
     });
 
-    // Remove button listener
     const removeBtn = item.querySelector('.remove-btn');
     removeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -164,7 +184,6 @@ function renderWorkspace() {
   generateCode();
 }
 
-// Program Execution Engine
 async function runProgram() {
   if (isRunning || programStack.length === 0) return;
 
@@ -174,7 +193,6 @@ async function runProgram() {
 
   let executionList = [];
 
-  // Handle Repeat Blocks cleanly
   for (let i = 0; i < programStack.length; i++) {
     const b = programStack[i];
     if (b.type === 'repeat') {
@@ -249,7 +267,7 @@ function playTone(freq) {
     osc.start();
     osc.stop(ctx.currentTime + 0.15);
   } catch (e) {
-    // Graceful fallback if browser audio context is blocked
+    // Web Audio catch block
   }
 }
 

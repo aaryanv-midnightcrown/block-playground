@@ -3,95 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Microcontroller Block Playground</title>
+  <title>PulseCore | Embedded Dev Lab</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <section class="playground-section">
-    <h2>⚡ Microcontroller Block Playground</h2>
-    <p>Click blocks to add them, or drag & drop to add/reorder sequence steps.</p>
+  <!-- Subtle Animated Background Elements -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-grid-pattern"></div>
 
-    <div class="playground-container">
-      <!-- 1. Block Library -->
-      <div class="panel library-panel">
-        <h3>Available Blocks</h3>
-        
-        <div class="block-category">GPIO & Outputs</div>
-        <div class="block-btn" draggable="true" data-key="LED_ON">+ Turn LED ON</div>
-        <div class="block-btn" draggable="true" data-key="LED_OFF">+ Turn LED OFF</div>
-        <div class="block-btn" draggable="true" data-key="RGB_RED">+ Set RGB: Red</div>
-        <div class="block-btn" draggable="true" data-key="RGB_GREEN">+ Set RGB: Green</div>
-        <div class="block-btn" draggable="true" data-key="RGB_BLUE">+ Set RGB: Blue</div>
-        <div class="block-btn" draggable="true" data-key="RGB_OFF">+ Turn RGB OFF</div>
-        <div class="block-btn" draggable="true" data-key="BUZZER_BEEP">+ Beep Buzzer</div>
+  <!-- LANDING PAGE FRONT END -->
+  <div id="landing-page" class="landing-container">
+    <nav class="nav-bar">
+      <div class="brand-logo">⚡ PulseCore <span>Studio</span></div>
+      <div class="nav-links">
+        <span class="version-tag">v2.4 Embedded Engine</span>
+      </div>
+    </nav>
 
-        <div class="block-category">Servo PWM</div>
-        <div class="block-btn" draggable="true" data-key="SERVO_ADD_90">+ Add +90° to Servo</div>
-        <div class="block-btn" draggable="true" data-key="SERVO_SUB_90">+ Subtract -90° from Servo</div>
-        <div class="block-btn" draggable="true" data-key="SERVO_ADD_45">+ Add +45° to Servo</div>
+    <main class="hero-section">
+      <div class="hero-pill">🚀 Next-Gen Hardware Simulation</div>
+      <h1 class="hero-title">Build. Sequence.<br>See the Microcontroller Live.</h1>
+      <p class="hero-subtitle">
+        Construct real-time GPIO and PWM hardware logic visually. Bridge visual block programming directly into production-ready C++ code.
+      </p>
 
-        <div class="block-category">Control & Software</div>
-        <div class="block-btn" draggable="true" data-key="WAIT_1S">+ Wait 1 Second</div>
-        <div class="block-btn" draggable="true" data-key="REPEAT_2X">+ Repeat Sequence 2x</div>
+      <div class="cta-group">
+        <button id="launch-btn" class="btn-primary">Launch Playground →</button>
+        <button id="quick-demo-btn" class="btn-secondary">View C++ Engine</button>
       </div>
 
-      <!-- 2. Program Workspace -->
-      <div class="panel workspace-panel">
-        <div class="workspace-header">
-          <h3>Program Sequence</h3>
-          <button id="clear-btn" class="clear-btn">Clear</button>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-icon">🎛️</div>
+          <h3>Dynamic I/O Control</h3>
+          <p>RGB LEDs, Piezo Buzzers, and relative Servo position loops built with zero friction.</p>
         </div>
-        <div id="program-list" class="program-list">
-          <div class="empty-msg">Click or drag blocks here to start building!</div>
+        <div class="feature-card">
+          <div class="card-icon">🔄</div>
+          <h3>Drag & Rearrange</h3>
+          <p>Fluid drag-and-drop workspace engine for instantly reordering execution logic.</p>
         </div>
-        <button id="run-btn" class="run-btn">▶ Run Program</button>
+        <div class="feature-card">
+          <div class="card-icon">💻</div>
+          <h3>C++ Code Mirror</h3>
+          <p>Inspect raw Arduino-compatible C++ output compiled on the fly as you place blocks.</p>
+        </div>
       </div>
+    </main>
+  </div>
 
-      <!-- 3. Simulator & Code Panel -->
-      <div class="panel sim-panel">
-        <div class="sim-header">
-          <div class="tab-buttons">
-            <button id="tab-btn-sim" class="tab-btn active">2D Output</button>
-            <button id="tab-btn-code" class="tab-btn">Behind the Scenes (C++)</button>
+  <!-- PLAYGROUND WORKSPACE PAGE (Hidden by default) -->
+  <div id="app-page" class="app-container hidden">
+    <header class="app-header">
+      <div class="brand-logo">⚡ PulseCore <span>/ Playground</span></div>
+      <button id="back-home-btn" class="back-btn">← Home</button>
+    </header>
+
+    <section class="playground-section">
+      <div class="playground-container">
+        <!-- 1. Block Library -->
+        <div class="panel library-panel">
+          <h3>Available Blocks</h3>
+          
+          <div class="block-category">GPIO & Outputs</div>
+          <div class="block-btn" draggable="true" data-key="LED_ON">+ Turn LED ON</div>
+          <div class="block-btn" draggable="true" data-key="LED_OFF">+ Turn LED OFF</div>
+          <div class="block-btn" draggable="true" data-key="RGB_RED">+ Set RGB: Red</div>
+          <div class="block-btn" draggable="true" data-key="RGB_GREEN">+ Set RGB: Green</div>
+          <div class="block-btn" draggable="true" data-key="RGB_BLUE">+ Set RGB: Blue</div>
+          <div class="block-btn" draggable="true" data-key="RGB_OFF">+ Turn RGB OFF</div>
+          <div class="block-btn" draggable="true" data-key="BUZZER_BEEP">+ Beep Buzzer</div>
+
+          <div class="block-category">Servo PWM</div>
+          <div class="block-btn" draggable="true" data-key="SERVO_ADD_90">+ Add +90° to Servo</div>
+          <div class="block-btn" draggable="true" data-key="SERVO_SUB_90">+ Subtract -90° from Servo</div>
+          <div class="block-btn" draggable="true" data-key="SERVO_ADD_45">+ Add +45° to Servo</div>
+
+          <div class="block-category">Control & Software</div>
+          <div class="block-btn" draggable="true" data-key="WAIT_1S">+ Wait 1 Second</div>
+          <div class="block-btn" draggable="true" data-key="REPEAT_2X">+ Repeat Sequence 2x</div>
+        </div>
+
+        <!-- 2. Program Workspace -->
+        <div class="panel workspace-panel">
+          <div class="workspace-header">
+            <h3>Program Sequence</h3>
+            <button id="clear-btn" class="clear-btn">Clear</button>
           </div>
-          <button id="reset-btn" class="reset-btn">🔄 Reset</button>
+          <div id="program-list" class="program-list">
+            <div class="empty-msg">Click or drag blocks here to start building!</div>
+          </div>
+          <button id="run-btn" class="run-btn">▶ Run Program</button>
         </div>
-        
-        <!-- 2D View -->
-        <div id="view-sim" class="tab-view active">
-          <div class="sim-display">
-            <div class="led-container">
-              <div id="sim-led" class="led-light"></div>
-              <span>Digital LED</span>
-            </div>
 
-            <div class="led-container">
-              <div id="sim-rgb" class="rgb-light"></div>
-              <span>RGB Module</span>
+        <!-- 3. Simulator & Code Panel -->
+        <div class="panel sim-panel">
+          <div class="sim-header">
+            <div class="tab-buttons">
+              <button id="tab-btn-sim" class="tab-btn active">2D Output</button>
+              <button id="tab-btn-code" class="tab-btn">Behind the Scenes (C++)</button>
             </div>
-
-            <div class="servo-container">
-              <div class="servo-base">
-                <div id="sim-servo-arm" class="servo-arm"></div>
+            <button id="reset-btn" class="reset-btn">🔄 Reset</button>
+          </div>
+          
+          <!-- 2D View -->
+          <div id="view-sim" class="tab-view active">
+            <div class="sim-display">
+              <div class="led-container">
+                <div id="sim-led" class="led-light"></div>
+                <span>Digital LED</span>
               </div>
-              <span id="servo-angle-label">Servo: 0°</span>
+
+              <div class="led-container">
+                <div id="sim-rgb" class="rgb-light"></div>
+                <span>RGB Module</span>
+              </div>
+
+              <div class="servo-container">
+                <div class="servo-base">
+                  <div id="sim-servo-arm" class="servo-arm"></div>
+                </div>
+                <span id="servo-angle-label">Servo: 0°</span>
+              </div>
+            </div>
+
+            <div class="sim-console">
+              <div class="console-title">Serial Output:</div>
+              <div id="console-output" class="console-text">> System ready...</div>
             </div>
           </div>
 
-          <div class="sim-console">
-            <div class="console-title">Serial Output:</div>
-            <div id="console-output" class="console-text">> System ready...</div>
+          <!-- Code View -->
+          <div id="view-code" class="tab-view">
+            <pre id="code-output" class="code-box"><code>// Add blocks to generate Arduino C++ code...</code></pre>
           </div>
         </div>
-
-        <!-- Code View -->
-        <div id="view-code" class="tab-view">
-          <pre id="code-output" class="code-box"><code>// Add blocks to generate Arduino C++ code...</code></pre>
-        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <script src="script.js"></script>
 </body>
