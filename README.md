@@ -2,6 +2,8 @@
 
 A beginner friendly visual playground for exploring how code works! Created with HTML, CSS, and plain JavaScript to let anyone mess around with blocks, control virtual elecs, and peek at real code without any confusion.
 
+Play here: https://aaryanv-midnightcrown.github.io/block-playground/
+
 ---
 
 ## Tech Stack & Features
