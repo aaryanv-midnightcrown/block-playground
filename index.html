@@ -8,55 +8,65 @@
 </head>
 <body>
 
-  <!-- Background Animated Shapes -->
-  <div class="bg-glow bg-glow-1"></div>
-  <div class="bg-glow bg-glow-2"></div>
-  <div class="bg-grid-pattern"></div>
-
   <!-- FRONT SCREEN (LANDING PAGE) -->
   <div id="landing-page" class="landing-container">
     <nav class="nav-bar">
-      <div class="brand-logo">⚡ PulseCore <span>Studio</span></div>
-      <div class="nav-links">
-        <span class="version-tag">v2.4 Embedded Engine</span>
-      </div>
+      <div class="brand-logo">PulseCore <span>Studio</span></div>
+      <div class="version-tag">v2.4</div>
     </nav>
 
-    <main class="hero-section">
-      <div class="hero-pill">🚀 Next-Gen Hardware Simulation</div>
-      <h1 class="hero-title">Build. Sequence.<br>See the Microcontroller Live.</h1>
-      <p class="hero-subtitle">
-        Construct real-time GPIO and PWM hardware logic visually. Bridge visual block programming directly into production-ready C++ code.
-      </p>
+    <main class="landing-body">
+      <!-- Left Sidebar Image Frame -->
+      <aside class="side-frame frame-left">
+        <div class="photo-card tilt-left">
+          <div class="photo-wrapper">
+            <img src="dev-workspace.png" alt="Dev Cat Workspace">
+          </div>
+          <span class="photo-caption">dev environment</span>
+        </div>
+      </aside>
 
-      <div class="cta-group">
-        <button id="launch-btn" class="btn-primary">Launch Playground →</button>
-      </div>
+      <!-- Center Content -->
+      <section class="hero-section">
+        <h1 class="hero-title">Embedded Logic &amp; Hardware Sequencing</h1>
+        <p class="hero-subtitle">
+          A visual workspace to program GPIO states, PWM signals, and servo routines—generating clean C++ code in real time.
+        </p>
 
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="card-icon">🎛️</div>
-          <h3>Dynamic I/O Control</h3>
-          <p>RGB LEDs, Piezo Buzzers, and relative Servo position loops built with zero friction.</p>
+        <button id="launch-btn" class="btn-primary">Open Workspace →</button>
+
+        <div class="specs-list">
+          <div class="spec-item">
+            <strong>GPIO &amp; PWM</strong>
+            <span>Interactive LED &amp; Servo loops</span>
+          </div>
+          <div class="spec-item">
+            <strong>Live Code</strong>
+            <span>Instant C++ mirroring</span>
+          </div>
+          <div class="spec-item">
+            <strong>Block Engine</strong>
+            <span>Drag &amp; reorder execution</span>
+          </div>
         </div>
-        <div class="feature-card">
-          <div class="card-icon">🔄</div>
-          <h3>Drag & Rearrange</h3>
-          <p>Fluid drag-and-drop workspace engine for instantly reordering execution logic.</p>
+      </section>
+
+      <!-- Right Sidebar Image Frame -->
+      <aside class="side-frame frame-right">
+        <div class="photo-card tilt-right">
+          <div class="photo-wrapper">
+            <img src="cat-sketch.jpg" alt="Stretching Cat Drawing">
+          </div>
+          <span class="photo-caption">bug fixing mood</span>
         </div>
-        <div class="feature-card">
-          <div class="card-icon">💻</div>
-          <h3>C++ Code Mirror</h3>
-          <p>Inspect raw Arduino-compatible C++ output compiled on the fly as you place blocks.</p>
-        </div>
-      </div>
+      </aside>
     </main>
   </div>
 
   <!-- APP WORKSPACE (HIDDEN INITIALLY) -->
   <div id="app-page" class="app-container hidden">
     <header class="app-header">
-      <div class="brand-logo">⚡ PulseCore <span>/ Playground</span></div>
+      <div class="brand-logo">PulseCore <span>/ Playground</span></div>
       <button id="back-home-btn" class="back-btn">← Home</button>
     </header>
 
@@ -66,7 +76,7 @@
         <div class="panel library-panel">
           <h3>Available Blocks</h3>
           
-          <div class="block-category">GPIO & Outputs</div>
+          <div class="block-category">GPIO &amp; Outputs</div>
           <div class="block-btn" draggable="true" data-key="LED_ON">+ Turn LED ON</div>
           <div class="block-btn" draggable="true" data-key="LED_OFF">+ Turn LED OFF</div>
           <div class="block-btn" draggable="true" data-key="RGB_RED">+ Set RGB: Red</div>
@@ -80,7 +90,7 @@
           <div class="block-btn" draggable="true" data-key="SERVO_SUB_90">+ Subtract -90° from Servo</div>
           <div class="block-btn" draggable="true" data-key="SERVO_ADD_45">+ Add +45° to Servo</div>
 
-          <div class="block-category">Control & Software</div>
+          <div class="block-category">Control &amp; Software</div>
           <div class="block-btn" draggable="true" data-key="WAIT_1S">+ Wait 1 Second</div>
           <div class="block-btn" draggable="true" data-key="REPEAT_2X">+ Repeat Sequence 2x</div>
         </div>
