@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PulseCore | Embedded Dev Lab</title>
+  <title>PulseCore Studio | Embedded Dev Lab</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Subtle Animated Background Elements -->
+  <!-- Background Animated Shapes -->
   <div class="bg-glow bg-glow-1"></div>
   <div class="bg-glow bg-glow-2"></div>
   <div class="bg-grid-pattern"></div>
 
-  <!-- LANDING PAGE FRONT END -->
+  <!-- FRONT SCREEN (LANDING PAGE) -->
   <div id="landing-page" class="landing-container">
     <nav class="nav-bar">
       <div class="brand-logo">⚡ PulseCore <span>Studio</span></div>
@@ -31,7 +31,6 @@
 
       <div class="cta-group">
         <button id="launch-btn" class="btn-primary">Launch Playground →</button>
-        <button id="quick-demo-btn" class="btn-secondary">View C++ Engine</button>
       </div>
 
       <div class="feature-grid">
@@ -54,7 +53,7 @@
     </main>
   </div>
 
-  <!-- PLAYGROUND WORKSPACE PAGE (Hidden by default) -->
+  <!-- APP WORKSPACE (HIDDEN INITIALLY) -->
   <div id="app-page" class="app-container hidden">
     <header class="app-header">
       <div class="brand-logo">⚡ PulseCore <span>/ Playground</span></div>
@@ -86,7 +85,7 @@
           <div class="block-btn" draggable="true" data-key="REPEAT_2X">+ Repeat Sequence 2x</div>
         </div>
 
-        <!-- 2. Program Workspace -->
+        <!-- 2. Workspace -->
         <div class="panel workspace-panel">
           <div class="workspace-header">
             <h3>Program Sequence</h3>
@@ -108,7 +107,6 @@
             <button id="reset-btn" class="reset-btn">🔄 Reset</button>
           </div>
           
-          <!-- 2D View -->
           <div id="view-sim" class="tab-view active">
             <div class="sim-display">
               <div class="led-container">
@@ -135,7 +133,6 @@
             </div>
           </div>
 
-          <!-- Code View -->
           <div id="view-code" class="tab-view">
             <pre id="code-output" class="code-box"><code>// Add blocks to generate Arduino C++ code...</code></pre>
           </div>

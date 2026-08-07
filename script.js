@@ -1,9 +1,8 @@
-// App State
 let programStack = [];
 let isRunning = false;
 let currentServoAngle = 0;
 let draggedItemIndex = null;
-let draggedSource = null; // 'library' or 'workspace'
+let draggedSource = null;
 let libraryKey = null;
 
 const BLOCK_TYPES = {
@@ -21,7 +20,6 @@ const BLOCK_TYPES = {
   REPEAT_2X: { label: 'Repeat Sequence 2x', type: 'repeat', times: 2, code: '// Repeat sequence loop\nfor (int r = 0; r < 2; r++) {' }
 };
 
-// Initialize Application UI & Listeners
 document.addEventListener('DOMContentLoaded', () => {
   setupNavigation();
   setupLibraryEvents();
@@ -30,23 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
   renderWorkspace();
 });
 
-// Front Page Router / Navigation Logic
 function setupNavigation() {
   const landingPage = document.getElementById('landing-page');
   const appPage = document.getElementById('app-page');
   const launchBtn = document.getElementById('launch-btn');
-  const demoBtn = document.getElementById('quick-demo-btn');
   const backHomeBtn = document.getElementById('back-home-btn');
 
   launchBtn.addEventListener('click', () => {
     landingPage.classList.add('hidden');
     appPage.classList.remove('hidden');
-  });
-
-  demoBtn.addEventListener('click', () => {
-    landingPage.classList.add('hidden');
-    appPage.classList.remove('hidden');
-    switchTab('code');
   });
 
   backHomeBtn.addEventListener('click', () => {
@@ -55,7 +45,6 @@ function setupNavigation() {
   });
 }
 
-// Setup Library Drag & Click Listeners
 function setupLibraryEvents() {
   const libButtons = document.querySelectorAll('.library-panel .block-btn');
   libButtons.forEach(btn => {
@@ -72,7 +61,6 @@ function setupLibraryEvents() {
   });
 }
 
-// Workspace Drag Dropzone Handler
 function setupWorkspaceEvents() {
   const workspace = document.getElementById('program-list');
 
@@ -111,7 +99,6 @@ function setupWorkspaceEvents() {
   });
 }
 
-// Interactive Controls and Tabs
 function setupControlEvents() {
   document.getElementById('clear-btn').addEventListener('click', clearProgram);
   document.getElementById('run-btn').addEventListener('click', runProgram);
@@ -266,9 +253,7 @@ function playTone(freq) {
     gain.connect(ctx.destination);
     osc.start();
     osc.stop(ctx.currentTime + 0.15);
-  } catch (e) {
-    // Web Audio catch block
-  }
+  } catch (e) {}
 }
 
 function highlightStep(index) {
