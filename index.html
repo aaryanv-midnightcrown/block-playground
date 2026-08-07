@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Midnight's Studio | Embedded Dev Lab</title>
+  <title>Midnight's Studio | Block Playground</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- front screen -->
+  <!-- FRONT SCREEN -->
   <div id="landing-page" class="landing-container">
     <nav class="nav-bar">
       <div class="brand-logo">Midnight's <span>Studio</span></div>
-      <div class="version-tag">v2.2</div>
+      <div class="version-tag">v2.3</div>
     </nav>
 
     <main class="landing-body">
@@ -30,23 +30,23 @@
       <section class="hero-section">
         <h1 class="hero-title">Midnight's Block Playground</h1>
         <p class="hero-subtitle">
-          A cool visual workspace for beginners to program GPIO states, PWM signals, and servo routines, so you can generate clean C++ code in real time.
+          A fun visual playground where you can build simple block routines, control virtual electronics, and peek at real code behind the scenes.
         </p>
 
         <button id="launch-btn" class="btn-primary">Open Workspace →</button>
 
         <div class="specs-list">
           <div class="spec-item">
-            <strong>GPIO &amp; PWM</strong>
-            <span>Interactive LED &amp; Servo loops</span>
+            <strong>Lights &amp; Motors</strong>
+            <span>Control fun hardware</span>
           </div>
           <div class="spec-item">
-            <strong>Live Code</strong>
-            <span>Instant C++ mirroring</span>
+            <strong>Peek at Code</strong>
+            <span>See how C++ works</span>
           </div>
           <div class="spec-item">
-            <strong>Block Engine</strong>
-            <span>Drag &amp; reorder execution</span>
+            <strong>Block Builder</strong>
+            <span>Drag &amp; drop to play</span>
           </div>
         </div>
       </section>
@@ -66,7 +66,7 @@
   <!-- APP WORKSPACE (HIDDEN INITIALLY) -->
   <div id="app-page" class="app-container hidden">
     <header class="app-header">
-      <div class="brand-logo">PulseCore <span>/ Playground</span></div>
+      <div class="brand-logo">Midnight's <span>/ Playground</span></div>
       <button id="back-home-btn" class="back-btn">← Home</button>
     </header>
 
@@ -76,22 +76,28 @@
         <div class="panel library-panel">
           <h3>Available Blocks</h3>
           
-          <div class="block-category">GPIO &amp; Outputs</div>
+          <div class="block-category">Lights &amp; Sound</div>
           <div class="block-btn" draggable="true" data-key="LED_ON">+ Turn LED ON</div>
           <div class="block-btn" draggable="true" data-key="LED_OFF">+ Turn LED OFF</div>
           <div class="block-btn" draggable="true" data-key="RGB_RED">+ Set RGB: Red</div>
           <div class="block-btn" draggable="true" data-key="RGB_GREEN">+ Set RGB: Green</div>
           <div class="block-btn" draggable="true" data-key="RGB_BLUE">+ Set RGB: Blue</div>
+          <div class="block-btn" draggable="true" data-key="RGB_PURPLE">+ Set RGB: Purple</div>
+          <div class="block-btn" draggable="true" data-key="RGB_YELLOW">+ Set RGB: Yellow</div>
           <div class="block-btn" draggable="true" data-key="RGB_OFF">+ Turn RGB OFF</div>
           <div class="block-btn" draggable="true" data-key="BUZZER_BEEP">+ Beep Buzzer</div>
 
-          <div class="block-category">Servo PWM</div>
-          <div class="block-btn" draggable="true" data-key="SERVO_ADD_90">+ Add +90° to Servo</div>
-          <div class="block-btn" draggable="true" data-key="SERVO_SUB_90">+ Subtract -90° from Servo</div>
-          <div class="block-btn" draggable="true" data-key="SERVO_ADD_45">+ Add +45° to Servo</div>
+          <div class="block-category">Motor Control</div>
+          <div class="block-btn" draggable="true" data-key="SERVO_ADD_45">+ Move Motor +45°</div>
+          <div class="block-btn" draggable="true" data-key="SERVO_ADD_90">+ Move Motor +90°</div>
+          <div class="block-btn" draggable="true" data-key="SERVO_SUB_45">+ Move Motor -45°</div>
+          <div class="block-btn" draggable="true" data-key="SERVO_SUB_90">+ Move Motor -90°</div>
+          <div class="block-btn" draggable="true" data-key="SERVO_RESET">+ Reset Motor to 0°</div>
 
-          <div class="block-category">Control &amp; Software</div>
+          <div class="block-category">Timing &amp; Loops</div>
+          <div class="block-btn" draggable="true" data-key="WAIT_05S">+ Wait 0.5 Seconds</div>
           <div class="block-btn" draggable="true" data-key="WAIT_1S">+ Wait 1 Second</div>
+          <div class="block-btn" draggable="true" data-key="WAIT_2S">+ Wait 2 Seconds</div>
           <div class="block-btn" draggable="true" data-key="REPEAT_2X">+ Repeat Sequence 2x</div>
         </div>
 

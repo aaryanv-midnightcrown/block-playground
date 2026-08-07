@@ -6,17 +6,28 @@ let draggedSource = null;
 let libraryKey = null;
 
 const BLOCK_TYPES = {
+  // Lights & Sound
   LED_ON: { label: 'Turn LED ON', type: 'led', value: true, code: 'digitalWrite(LED_PIN, HIGH);' },
   LED_OFF: { label: 'Turn LED OFF', type: 'led', value: false, code: 'digitalWrite(LED_PIN, LOW);' },
   RGB_RED: { label: 'Set RGB: Red', type: 'rgb', value: '#ef4444', code: 'setRGB(255, 0, 0);' },
   RGB_GREEN: { label: 'Set RGB: Green', type: 'rgb', value: '#22c55e', code: 'setRGB(0, 255, 0);' },
   RGB_BLUE: { label: 'Set RGB: Blue', type: 'rgb', value: '#3b82f6', code: 'setRGB(0, 0, 255);' },
+  RGB_PURPLE: { label: 'Set RGB: Purple', type: 'rgb', value: '#a855f7', code: 'setRGB(168, 85, 247);' },
+  RGB_YELLOW: { label: 'Set RGB: Yellow', type: 'rgb', value: '#eab308', code: 'setRGB(234, 179, 8);' },
   RGB_OFF: { label: 'Turn RGB OFF', type: 'rgb', value: '#334155', code: 'setRGB(0, 0, 0);' },
   BUZZER_BEEP: { label: 'Beep Buzzer', type: 'buzzer', value: 880, code: 'tone(BUZZER_PIN, 880, 200);' },
-  SERVO_ADD_90: { label: 'Add +90° to Servo', type: 'servo', delta: 90, code: 'servoAngle = constrain(servoAngle + 90, 0, 180);\nmyServo.write(servoAngle);' },
-  SERVO_SUB_90: { label: 'Subtract -90° from Servo', type: 'servo', delta: -90, code: 'servoAngle = constrain(servoAngle - 90, 0, 180);\nmyServo.write(servoAngle);' },
-  SERVO_ADD_45: { label: 'Add +45° to Servo', type: 'servo', delta: 45, code: 'servoAngle = constrain(servoAngle + 45, 0, 180);\nmyServo.write(servoAngle);' },
+
+  // Motor Control
+  SERVO_ADD_45: { label: 'Move Motor +45°', type: 'servo', delta: 45, absolute: null, code: 'servoAngle = constrain(servoAngle + 45, 0, 180);\nmyServo.write(servoAngle);' },
+  SERVO_ADD_90: { label: 'Move Motor +90°', type: 'servo', delta: 90, absolute: null, code: 'servoAngle = constrain(servoAngle + 90, 0, 180);\nmyServo.write(servoAngle);' },
+  SERVO_SUB_45: { label: 'Move Motor -45°', type: 'servo', delta: -45, absolute: null, code: 'servoAngle = constrain(servoAngle - 45, 0, 180);\nmyServo.write(servoAngle);' },
+  SERVO_SUB_90: { label: 'Move Motor -90°', type: 'servo', delta: -90, absolute: null, code: 'servoAngle = constrain(servoAngle - 90, 0, 180);\nmyServo.write(servoAngle);' },
+  SERVO_RESET: { label: 'Reset Motor to 0°', type: 'servo', delta: 0, absolute: 0, code: 'servoAngle = 0;\nmyServo.write(servoAngle);' },
+
+  // Timing & Loops
+  WAIT_05S: { label: 'Wait 0.5 Seconds', type: 'wait', value: 500, code: 'delay(500);' },
   WAIT_1S: { label: 'Wait 1 Second', type: 'wait', value: 1000, code: 'delay(1000);' },
+  WAIT_2S: { label: 'Wait 2 Seconds', type: 'wait', value: 2000, code: 'delay(2000);' },
   REPEAT_2X: { label: 'Repeat Sequence 2x', type: 'repeat', times: 2, code: '// Repeat sequence loop\nfor (int r = 0; r < 2; r++) {' }
 };
 
@@ -219,10 +230,14 @@ async function runProgram() {
       playTone(block.value);
       logConsole(`PWM: Buzzer played ${block.value}Hz tone`);
     } else if (block.type === 'servo') {
-      currentServoAngle = Math.min(180, Math.max(0, currentServoAngle + block.delta));
+      if (block.absolute !== null && block.absolute !== undefined) {
+        currentServoAngle = block.absolute;
+      } else {
+        currentServoAngle = Math.min(180, Math.max(0, currentServoAngle + block.delta));
+      }
       document.getElementById('sim-servo-arm').style.transform = `rotate(${currentServoAngle}deg)`;
       document.getElementById('servo-angle-label').innerText = `Servo: ${currentServoAngle}°`;
-      logConsole(`PWM: Servo shifted by ${block.delta}° (Now: ${currentServoAngle}°)`);
+      logConsole(`PWM: Servo adjusted to ${currentServoAngle}°`);
     } else if (block.type === 'wait') {
       logConsole(`DELAY: Waiting ${block.value / 1000}s...`);
       await new Promise(res => setTimeout(res, block.value));

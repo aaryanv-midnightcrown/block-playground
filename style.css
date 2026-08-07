@@ -498,3 +498,8 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.library-panel {
+  max-height: 80vh;
+  overflow-y: auto;
+}
