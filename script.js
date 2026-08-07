@@ -99,6 +99,18 @@ function clearStepHighlights() {
   document.querySelectorAll('.program-item').forEach(el => el.classList.remove('active-step'));
 }
 
+function resetSimulation() {
+  if (isRunning) return;
+
+  const ledEl = document.getElementById('sim-led');
+  if (ledEl) ledEl.classList.remove('on');
+
+  const armEl = document.getElementById('sim-servo-arm');
+  if (armEl) armEl.style.transform = 'rotate(0deg)';
+
+  logConsole("Hardware state reset to default (LED: OFF, Servo: 0°).");
+}
+
 function logConsole(text) {
   const consoleEl = document.getElementById('console-output');
   if (consoleEl) consoleEl.innerText = `> ${text}`;

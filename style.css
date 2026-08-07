@@ -118,6 +118,28 @@ body {
   background: #059669;
 }
 
+.sim-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.reset-btn {
+  background: #64748b;
+  color: white;
+  border: none;
+  padding: 0.35rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.reset-btn:hover {
+  background: #475569;
+}
+
 .sim-display {
   display: flex;
   justify-content: space-around;
