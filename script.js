@@ -1,8 +1,10 @@
+// State
 let programStack = [];
 let isRunning = false;
 let currentServoAngle = 0;
 let draggedItemIndex = null;
-let draggedLibraryKey = null;
+let draggedSource = null; // 'library' or 'workspace'
+let libraryKey = null;
 
 const BLOCK_TYPES = {
   LED_ON: { label: 'Turn LED ON', type: 'led', value: true, code: 'digitalWrite(LED_PIN, HIGH);' },
@@ -19,52 +21,87 @@ const BLOCK_TYPES = {
   REPEAT_2X: { label: 'Repeat Sequence 2x', type: 'repeat', times: 2, code: '// Repeat sequence loop\nfor (int r = 0; r < 2; r++) {' }
 };
 
-// --- DRAG AND DROP HANDLERS ---
-function handleDragStart(e, key) {
-  draggedLibraryKey = key;
-  draggedItemIndex = null;
+// Initialize UI
+document.addEventListener('DOMContentLoaded', () => {
+  setupLibraryEvents();
+  setupWorkspaceEvents();
+  setupControlEvents();
+  renderWorkspace();
+});
+
+// Setup Library Click & Drag Events
+function setupLibraryEvents() {
+  const libButtons = document.querySelectorAll('.library-panel .block-btn');
+  libButtons.forEach(btn => {
+    // Click to add
+    btn.addEventListener('click', () => {
+      const key = btn.getAttribute('data-key');
+      addBlock(key);
+    });
+
+    // Drag start
+    btn.addEventListener('dragstart', (e) => {
+      draggedSource = 'library';
+      libraryKey = btn.getAttribute('data-key');
+      e.dataTransfer.setData('text/plain', libraryKey);
+    });
+  });
 }
 
-function handleSequenceDragStart(e, index) {
-  draggedItemIndex = index;
-  draggedLibraryKey = null;
-  e.target.classList.add('dragging-item');
-}
+// Setup Workspace Drag & Drop Dropzone
+function setupWorkspaceEvents() {
+  const workspace = document.getElementById('program-list');
 
-function handleSequenceDragEnd(e) {
-  e.target.classList.remove('dragging-item');
-}
+  workspace.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    workspace.classList.add('drag-over');
+  });
 
-function handleWorkspaceDragOver(e) {
-  e.preventDefault();
-  document.getElementById('program-list').classList.add('drag-over');
-}
+  workspace.addEventListener('dragleave', () => {
+    workspace.classList.remove('drag-over');
+  });
 
-function handleWorkspaceDrop(e) {
-  e.preventDefault();
-  const listEl = document.getElementById('program-list');
-  listEl.classList.remove('drag-over');
+  workspace.addEventListener('drop', (e) => {
+    e.preventDefault();
+    workspace.classList.remove('drag-over');
 
-  if (isRunning) return;
+    if (isRunning) return;
 
-  if (draggedLibraryKey) {
-    addBlock(draggedLibraryKey);
-  } else if (draggedItemIndex !== null) {
-    // Reorder inside list
-    const dropTarget = e.target.closest('.program-item');
-    if (dropTarget) {
-      const targetIndex = parseInt(dropTarget.getAttribute('data-index'));
-      const movedItem = programStack.splice(draggedItemIndex, 1)[0];
-      programStack.splice(targetIndex, 0, movedItem);
-      renderWorkspace();
+    if (draggedSource === 'library' && libraryKey) {
+      addBlock(libraryKey);
+    } else if (draggedSource === 'workspace' && draggedItemIndex !== null) {
+      const targetItem = e.target.closest('.program-item');
+      if (targetItem) {
+        const targetIdx = parseInt(targetItem.getAttribute('data-index'), 10);
+        if (!isNaN(targetIdx) && targetIdx !== draggedItemIndex) {
+          const movedItem = programStack.splice(draggedItemIndex, 1)[0];
+          programStack.splice(targetIdx, 0, movedItem);
+          renderWorkspace();
+        }
+      }
     }
-  }
+
+    // Reset Drag state
+    draggedSource = null;
+    draggedItemIndex = null;
+    libraryKey = null;
+  });
 }
 
-// --- WORKSPACE & RENDER ---
-function addBlock(blockKey) {
-  if (isRunning) return;
-  programStack.push({ ...BLOCK_TYPES[blockKey] });
+// Setup Control Buttons and Tabs
+function setupControlEvents() {
+  document.getElementById('clear-btn').addEventListener('click', clearProgram);
+  document.getElementById('run-btn').addEventListener('click', runProgram);
+  document.getElementById('reset-btn').addEventListener('click', resetSimulation);
+
+  document.getElementById('tab-btn-sim').addEventListener('click', () => switchTab('sim'));
+  document.getElementById('tab-btn-code').addEventListener('click', () => switchTab('code'));
+}
+
+// Workspace Management
+function addBlock(key) {
+  if (isRunning || !BLOCK_TYPES[key]) return;
+  programStack.push({ ...BLOCK_TYPES[key] });
   renderWorkspace();
 }
 
@@ -82,51 +119,72 @@ function clearProgram() {
 }
 
 function renderWorkspace() {
-  const listEl = document.getElementById('program-list');
-  listEl.innerHTML = '';
+  const workspace = document.getElementById('program-list');
+  workspace.innerHTML = '';
 
   if (programStack.length === 0) {
-    listEl.innerHTML = '<li class="empty-msg">Drag or click blocks on the left to add!</li>';
+    workspace.innerHTML = '<div class="empty-msg">Click or drag blocks here to start building!</div>';
     generateCode();
     return;
   }
 
   programStack.forEach((block, idx) => {
-    const li = document.createElement('li');
-    li.className = 'program-item';
-    li.id = `step-${idx}`;
-    li.setAttribute('data-index', idx);
-    li.setAttribute('draggable', 'true');
-    li.setAttribute('ondragstart', `handleSequenceDragStart(event, ${idx})`);
-    li.setAttribute('ondragend', 'handleSequenceDragEnd(event)');
-    li.innerHTML = `
+    const item = document.createElement('div');
+    item.className = 'program-item';
+    item.setAttribute('draggable', 'true');
+    item.setAttribute('data-index', idx);
+
+    item.innerHTML = `
       <span>☰ ${idx + 1}. ${block.label}</span>
-      <button class="remove-btn" onclick="removeBlock(${idx})">✕</button>
+      <button class="remove-btn" data-index="${idx}">✕</button>
     `;
-    listEl.appendChild(li);
+
+    // Reorder Drag Events
+    item.addEventListener('dragstart', (e) => {
+      draggedSource = 'workspace';
+      draggedItemIndex = idx;
+      item.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', `${idx}`);
+    });
+
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+    });
+
+    // Remove button listener
+    const removeBtn = item.querySelector('.remove-btn');
+    removeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeBlock(idx);
+    });
+
+    workspace.appendChild(item);
   });
 
   generateCode();
 }
 
-// --- SIMULATION EXECUTION ---
+// Program Execution Engine
 async function runProgram() {
   if (isRunning || programStack.length === 0) return;
-  
+
   isRunning = true;
   document.getElementById('run-btn').innerText = '⏳ Running...';
-  logConsole("Starting program execution...");
+  logConsole("Starting execution...");
 
-  let loopMultiplier = 1;
-  let executionList = [...programStack];
+  let executionList = [];
 
-  // Check for repeat wrapper block
-  if (executionList.some(b => b.type === 'repeat')) {
-    const repeatBlock = executionList.find(b => b.type === 'repeat');
-    const innerBlocks = executionList.filter(b => b.type !== 'repeat');
-    executionList = [];
-    for (let r = 0; r < repeatBlock.times; r++) {
-      executionList.push(...innerBlocks);
+  // Handle Repeat Blocks cleanly
+  for (let i = 0; i < programStack.length; i++) {
+    const b = programStack[i];
+    if (b.type === 'repeat') {
+      const rest = programStack.filter(item => item.type !== 'repeat');
+      for (let r = 0; r < b.times; r++) {
+        executionList.push(...rest);
+      }
+      break;
+    } else {
+      executionList.push(b);
     }
   }
 
@@ -138,10 +196,10 @@ async function runProgram() {
       const ledEl = document.getElementById('sim-led');
       if (block.value) {
         ledEl.classList.add('on');
-        logConsole("GPIO: LED pin set to HIGH");
+        logConsole("GPIO: LED set to HIGH");
       } else {
         ledEl.classList.remove('on');
-        logConsole("GPIO: LED pin set to LOW");
+        logConsole("GPIO: LED set to LOW");
       }
     } else if (block.type === 'rgb') {
       const rgbEl = document.getElementById('sim-rgb');
@@ -151,16 +209,15 @@ async function runProgram() {
       } else {
         rgbEl.style.boxShadow = 'inset 0 0 5px #000';
       }
-      logConsole(`RGB: Color updated to ${block.value}`);
+      logConsole(`RGB: Color set to ${block.value}`);
     } else if (block.type === 'buzzer') {
-      playAudioTone(block.value);
-      logConsole(`PWM: Playing audio tone at ${block.value}Hz`);
+      playTone(block.value);
+      logConsole(`PWM: Buzzer played ${block.value}Hz tone`);
     } else if (block.type === 'servo') {
       currentServoAngle = Math.min(180, Math.max(0, currentServoAngle + block.delta));
-      const armEl = document.getElementById('sim-servo-arm');
-      armEl.style.transform = `rotate(${currentServoAngle}deg)`;
+      document.getElementById('sim-servo-arm').style.transform = `rotate(${currentServoAngle}deg)`;
       document.getElementById('servo-angle-label').innerText = `Servo: ${currentServoAngle}°`;
-      logConsole(`PWM: Servo shifted by ${block.delta}° (Current: ${currentServoAngle}°)`);
+      logConsole(`PWM: Servo shifted by ${block.delta}° (Now: ${currentServoAngle}°)`);
     } else if (block.type === 'wait') {
       logConsole(`DELAY: Waiting ${block.value / 1000}s...`);
       await new Promise(res => setTimeout(res, block.value));
@@ -172,32 +229,36 @@ async function runProgram() {
   }
 
   clearStepHighlights();
-  logConsole("Done!");
+  logConsole("Program complete.");
   document.getElementById('run-btn').innerText = '▶ Run Program';
   isRunning = false;
 }
 
-function playAudioTone(freq) {
+function playTone(freq) {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.value = freq;
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.start();
-    osc.stop(ctx.currentTime + 0.2);
+    osc.stop(ctx.currentTime + 0.15);
   } catch (e) {
-    // Audio context fallback if blocked by browser policy
+    // Graceful fallback if browser audio context is blocked
   }
 }
 
 function highlightStep(index) {
   clearStepHighlights();
-  const stepEl = document.getElementById(`step-${index}`);
-  if (stepEl) stepEl.classList.add('active-step');
+  const items = document.querySelectorAll('.program-item');
+  if (items[index]) {
+    items[index].classList.add('active-step');
+  }
 }
 
 function clearStepHighlights() {
@@ -207,29 +268,23 @@ function clearStepHighlights() {
 function resetSimulation() {
   if (isRunning) return;
 
-  const ledEl = document.getElementById('sim-led');
-  if (ledEl) ledEl.classList.remove('on');
-
+  document.getElementById('sim-led').classList.remove('on');
+  
   const rgbEl = document.getElementById('sim-rgb');
-  if (rgbEl) {
-    rgbEl.style.background = '#334155';
-    rgbEl.style.boxShadow = 'inset 0 0 5px #000';
-  }
+  rgbEl.style.background = '#334155';
+  rgbEl.style.boxShadow = 'inset 0 0 5px #000';
 
   currentServoAngle = 0;
-  const armEl = document.getElementById('sim-servo-arm');
-  if (armEl) armEl.style.transform = 'rotate(0deg)';
+  document.getElementById('sim-servo-arm').style.transform = 'rotate(0deg)';
   document.getElementById('servo-angle-label').innerText = 'Servo: 0°';
 
-  logConsole("Hardware reset to defaults (LED: OFF, RGB: OFF, Servo: 0°).");
+  logConsole("Hardware reset to defaults.");
 }
 
 function logConsole(text) {
-  const consoleEl = document.getElementById('console-output');
-  if (consoleEl) consoleEl.innerText = `> ${text}`;
+  document.getElementById('console-output').innerText = `> ${text}`;
 }
 
-// --- CODE GENERATOR & TAB SWITCHING ---
 function switchTab(tabName) {
   document.getElementById('tab-btn-sim').classList.toggle('active', tabName === 'sim');
   document.getElementById('tab-btn-code').classList.toggle('active', tabName === 'code');
@@ -241,7 +296,7 @@ function generateCode() {
   let codeStr = `#include <Servo.h>\n\nconst int LED_PIN = 13;\nconst int BUZZER_PIN = 8;\nServo myServo;\nint servoAngle = 0;\n\nvoid setup() {\n  pinMode(LED_PIN, OUTPUT);\n  pinMode(BUZZER_PIN, OUTPUT);\n  myServo.attach(9);\n  myServo.write(0);\n}\n\nvoid loop() {\n`;
 
   if (programStack.length === 0) {
-    codeStr += `  // No blocks added yet\n`;
+    codeStr += `  // Add blocks to sequence...\n`;
   } else {
     programStack.forEach(block => {
       const indented = block.code.split('\n').map(line => `  ${line}`).join('\n');
