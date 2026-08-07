@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microcontroller Block Playground</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <section class="playground-section">
+    <h2>⚡ Microcontroller Block Playground</h2>
+    <p>Click blocks to build a control sequence, then click Run!</p>
+
+    <div class="playground-container">
+      <!-- 1. Block Library -->
+      <div class="panel library-panel">
+        <h3>Available Blocks</h3>
+        <button class="block-btn" onclick="addBlock('LED_ON')">+ Turn LED ON</button>
+        <button class="block-btn" onclick="addBlock('LED_OFF')">+ Turn LED OFF</button>
+        <button class="block-btn" onclick="addBlock('SERVO_0')">+ Set Servo to 0°</button>
+        <button class="block-btn" onclick="addBlock('SERVO_90')">+ Set Servo to 90°</button>
+        <button class="block-btn" onclick="addBlock('WAIT_1S')">+ Wait 1 Second</button>
+      </div>
+
+      <!-- 2. Program Workspace -->
+      <div class="panel workspace-panel">
+        <div class="workspace-header">
+          <h3>Program Sequence</h3>
+          <button class="clear-btn" onclick="clearProgram()">Clear</button>
+        </div>
+        <ol id="program-list" class="program-list">
+          <li class="empty-msg">No blocks added yet. Click blocks on the left!</li>
+        </ol>
+        <button id="run-btn" class="run-btn" onclick="runProgram()">▶ Run Program</button>
+      </div>
+
+      <!-- 3. 2D Simulator Visualizer -->
+      <div class="panel sim-panel">
+        <h3>2D Hardware Output</h3>
+        
+        <div class="sim-display">
+          <div class="led-container">
+            <div id="sim-led" class="led-light"></div>
+            <span>LED Status</span>
+          </div>
+
+          <div class="servo-container">
+            <div class="servo-base">
+              <div id="sim-servo-arm" class="servo-arm"></div>
+            </div>
+            <span>Servo Angle</span>
+          </div>
+        </div>
+
+        <div class="sim-console">
+          <div class="console-title">Serial Output:</div>
+          <div id="console-output" class="console-text">> System ready...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
