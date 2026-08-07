@@ -10,17 +10,30 @@
 
   <section class="playground-section">
     <h2>⚡ Microcontroller Block Playground</h2>
-    <p>Click blocks to build a control sequence, then click Run!</p>
+    <p>Drag or click blocks to build a sequence, reorder steps, and view generated code!</p>
 
     <div class="playground-container">
       <!-- 1. Block Library -->
       <div class="panel library-panel">
         <h3>Available Blocks</h3>
-        <button class="block-btn" onclick="addBlock('LED_ON')">+ Turn LED ON</button>
-        <button class="block-btn" onclick="addBlock('LED_OFF')">+ Turn LED OFF</button>
-        <button class="block-btn" onclick="addBlock('SERVO_0')">+ Set Servo to 0°</button>
-        <button class="block-btn" onclick="addBlock('SERVO_90')">+ Set Servo to 90°</button>
-        <button class="block-btn" onclick="addBlock('WAIT_1S')">+ Wait 1 Second</button>
+        
+        <div class="block-category">GPIO & Outputs</div>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'LED_ON')" onclick="addBlock('LED_ON')">+ Turn LED ON</button>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'LED_OFF')" onclick="addBlock('LED_OFF')">+ Turn LED OFF</button>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'RGB_RED')" onclick="addBlock('RGB_RED')">+ Set RGB: Red</button>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'RGB_GREEN')" onclick="addBlock('RGB_GREEN')">+ Set RGB: Green</button>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'RGB_BLUE')" onclick="addBlock('RGB_BLUE')">+ Set RGB: Blue</button>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'RGB_OFF')" onclick="addBlock('RGB_OFF')">+ Turn RGB OFF</button>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'BUZZER_BEEP')" onclick="addBlock('BUZZER_BEEP')">+ Beep Buzzer</button>
+
+        <div class="block-category">Servo PWM</div>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'SERVO_ADD_90')" onclick="addBlock('SERVO_ADD_90')">+ Add +90° to Servo</button>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'SERVO_SUB_90')" onclick="addBlock('SERVO_SUB_90')">+ Subtract -90° from Servo</button>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'SERVO_ADD_45')" onclick="addBlock('SERVO_ADD_45')">+ Add +45° to Servo</button>
+
+        <div class="block-category">Control & Software</div>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'WAIT_1S')" onclick="addBlock('WAIT_1S')">+ Wait 1 Second</button>
+        <button class="block-btn" draggable="true" ondragstart="handleDragStart(event, 'REPEAT_2X')" onclick="addBlock('REPEAT_2X')">+ Repeat Sequence 2x</button>
       </div>
 
       <!-- 2. Program Workspace -->
@@ -29,36 +42,52 @@
           <h3>Program Sequence</h3>
           <button class="clear-btn" onclick="clearProgram()">Clear</button>
         </div>
-        <ol id="program-list" class="program-list">
-          <li class="empty-msg">No blocks added yet. Click blocks on the left!</li>
+        <ol id="program-list" class="program-list" ondragover="handleWorkspaceDragOver(event)" ondrop="handleWorkspaceDrop(event)">
+          <li class="empty-msg">Drag or click blocks on the left to add!</li>
         </ol>
         <button id="run-btn" class="run-btn" onclick="runProgram()">▶ Run Program</button>
       </div>
 
-      <!-- 3. 2D Simulator Visualizer -->
+      <!-- 3. Simulator & Code Panel -->
       <div class="panel sim-panel">
         <div class="sim-header">
-          <h3>2D Hardware Output</h3>
-          <button class="reset-btn" onclick="resetSimulation()">🔄 Reset Hardware</button>
+          <div class="tab-buttons">
+            <button id="tab-btn-sim" class="tab-btn active" onclick="switchTab('sim')">2D Output</button>
+            <button id="tab-btn-code" class="tab-btn" onclick="switchTab('code')">Behind the Scenes (C++)</button>
+          </div>
+          <button class="reset-btn" onclick="resetSimulation()">🔄 Reset</button>
         </div>
         
-        <div class="sim-display">
-          <div class="led-container">
-            <div id="sim-led" class="led-light"></div>
-            <span>LED Status</span>
+        <!-- 2D View -->
+        <div id="view-sim" class="tab-view active">
+          <div class="sim-display">
+            <div class="led-container">
+              <div id="sim-led" class="led-light"></div>
+              <span>Digital LED</span>
+            </div>
+
+            <div class="led-container">
+              <div id="sim-rgb" class="rgb-light"></div>
+              <span>RGB Module</span>
+            </div>
+
+            <div class="servo-container">
+              <div class="servo-base">
+                <div id="sim-servo-arm" class="servo-arm"></div>
+              </div>
+              <span id="servo-angle-label">Servo: 0°</span>
+            </div>
           </div>
 
-          <div class="servo-container">
-            <div class="servo-base">
-              <div id="sim-servo-arm" class="servo-arm"></div>
-            </div>
-            <span>Servo Angle</span>
+          <div class="sim-console">
+            <div class="console-title">Serial Output:</div>
+            <div id="console-output" class="console-text">> System ready...</div>
           </div>
         </div>
 
-        <div class="sim-console">
-          <div class="console-title">Serial Output:</div>
-          <div id="console-output" class="console-text">> System ready...</div>
+        <!-- Code View -->
+        <div id="view-code" class="tab-view">
+          <pre id="code-output" class="code-box"><code>// Click or drag blocks to generate Arduino C++ code...</code></pre>
         </div>
       </div>
     </div>

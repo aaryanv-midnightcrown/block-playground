@@ -7,7 +7,7 @@ body {
 
 .playground-section {
   padding: 2rem;
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -34,21 +34,35 @@ body {
   font-size: 1.1rem;
 }
 
+.block-category {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  margin: 0.6rem 0 0.3rem 0;
+  font-weight: bold;
+}
+
 .block-btn {
   background: #2563eb;
   color: white;
   border: none;
-  padding: 0.6rem 1rem;
-  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 0.4rem;
   border-radius: 6px;
-  cursor: pointer;
+  cursor: grab;
   text-align: left;
+  font-size: 0.85rem;
   transition: transform 0.1s, background 0.2s;
 }
 
 .block-btn:hover {
   background: #3b82f6;
   transform: translateX(4px);
+}
+
+.block-btn:active {
+  cursor: grabbing;
 }
 
 .workspace-header {
@@ -69,18 +83,36 @@ body {
 .program-list {
   list-style-position: inside;
   padding: 0;
-  min-height: 150px;
+  min-height: 200px;
   flex-grow: 1;
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  margin: 0.5rem 0;
+}
+
+.program-list.drag-over {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .program-item {
   background: rgba(255, 255, 255, 0.1);
   padding: 0.5rem 0.8rem;
-  margin-bottom: 0.4rem;
+  margin: 0.4rem;
   border-radius: 6px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: grab;
+  font-size: 0.85rem;
+}
+
+.program-item:active {
+  cursor: grabbing;
+}
+
+.program-item.dragging-item {
+  opacity: 0.4;
 }
 
 .program-item.active-step {
@@ -100,7 +132,9 @@ body {
   list-style: none;
   color: #888;
   font-style: italic;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  padding: 1rem;
+  text-align: center;
 }
 
 .run-btn {
@@ -111,7 +145,7 @@ body {
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .run-btn:hover {
@@ -122,7 +156,27 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.tab-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  border: none;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background: #2563eb;
+  color: white;
 }
 
 .reset-btn {
@@ -133,18 +187,21 @@ body {
   border-radius: 6px;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: background 0.2s;
 }
 
-.reset-btn:hover {
-  background: #475569;
+.tab-view {
+  display: none;
+}
+
+.tab-view.active {
+  display: block;
 }
 
 .sim-display {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin: 1rem 0;
+  margin: 0.5rem 0 1rem 0;
   height: 120px;
 }
 
@@ -152,13 +209,13 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
+  gap: 0.4rem;
+  font-size: 0.75rem;
 }
 
 .led-light {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: #334155;
   box-shadow: inset 0 0 5px #000;
@@ -170,9 +227,18 @@ body {
   box-shadow: 0 0 15px #22c55e;
 }
 
+.rgb-light {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: #334155;
+  box-shadow: inset 0 0 5px #000;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
 .servo-base {
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   background: #1e293b;
   border-radius: 50%;
   position: relative;
@@ -182,11 +248,11 @@ body {
 }
 
 .servo-arm {
-  width: 26px;
+  width: 24px;
   height: 4px;
   background: #f59e0b;
   position: absolute;
-  left: 30px;
+  left: 27px;
   transform-origin: left center;
   transform: rotate(0deg);
   transition: transform 0.4s ease-out;
@@ -208,6 +274,18 @@ body {
 
 .console-text {
   color: #38bdf8;
+}
+
+.code-box {
+  background: #0f172a;
+  border-radius: 6px;
+  padding: 0.8rem;
+  font-family: monospace;
+  font-size: 0.78rem;
+  color: #a7f3d0;
+  overflow-x: auto;
+  max-height: 280px;
+  margin: 0;
 }
 
 @media (max-width: 850px) {
